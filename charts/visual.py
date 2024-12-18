@@ -54,11 +54,16 @@ def show_smoking():
 
         # 팝업에 표시할 HTML 내용 생성
         ps = f'<b>시설형태:{nm}</b><br>설치 위치:{ad}<br>데이터기준일:{te}<br>'
-
+        # 커스텀 아이콘 설정
+        custom_icon = folium.CustomIcon(
+            "static/smoking_area.png",
+            icon_size=(50, 50)
+        )
         # 지도에 추가할 마커 생성 (위도, 경도로 위치 지정)
         mk = folium.Marker(
             [lo, la],  # 마커 위치
-            popup=folium.Popup(ps, max_width=400)  # 팝업 내용 및 최대 너비 설정
+            popup=folium.Popup(ps, max_width=400),  # 팝업 내용 및 최대 너비 설정
+            icon=custom_icon,
         )
 
         # 마커를 클러스터에 추가
