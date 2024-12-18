@@ -18,11 +18,25 @@ def show_smoking():
     # 지도 객체 생성 (중심 좌표: 서울 시청, 줌 레벨: 11)
     map = folium.Map(location=[37.5665, 126.9780], zoom_start=11)
 
-    # 반응형 스타일을 적용하여 사용자 디스플레이에 적응
+    # 반응형 스타일을 적용하여 사용자 디스플레이에 적응 및 상단 바 추가
     map.get_root().html.add_child(folium.Element("""
         <style>
             #map { height: calc(100vh - 100px); }
         </style>
+        <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        line-height: 50px;
+        font-size: 20px;
+        z-index: 1000;">
+        <b>smoke.py</b>
+        </div>
     """))
 
     # GeoJSON 데이터를 지도 위에 표시 (서울 군별 경계선 스타일 적용)
@@ -40,7 +54,7 @@ def show_smoking():
     mc = MC().add_to(map)
 
     # Fullscreen 플러그인 추가
-    fullscreen = Fullscreen(position="topright", title="Expand Map", title_cancel="Exit Fullscreen")
+    fullscreen = Fullscreen(position="bottomright", title="Expand Map", title_cancel="Exit Fullscreen")
     fullscreen.add_to(map)
 
     # 데이터프레임의 각 행을 반복 처리
@@ -75,7 +89,7 @@ def show_smoking():
         placeholder="ex) 강남구, 종로구 ...",
         collapsed=False,
         geom_type="Polygon",
-        position="topleft",
+        position="bottomleft",
     ).add_to(map)
 
     # 지도 HTML 렌더링하여 반환 (Flask 뷰에서 사용)
