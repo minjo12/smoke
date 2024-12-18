@@ -1,5 +1,6 @@
 import folium
 from folium.plugins import MarkerCluster as MC
+from folium.plugins import Fullscreen, Search
 import pandas as pd
 import json
 
@@ -17,8 +18,15 @@ def show_smoking():
     # 지도 객체 생성 (중심 좌표: 서울 시청, 줌 레벨: 11)
     map = folium.Map(location=[37.5665, 126.9780], zoom_start=11)
 
+    # 반응형 스타일을 적용하여 사용자 디스플레이에 적응
+    map.get_root().html.add_child(folium.Element("""
+        <style>
+            #map { height: calc(100vh - 100px); }
+        </style>
+    """))
+
     # GeoJSON 데이터를 지도 위에 표시 (서울 군별 경계선 스타일 적용)
-    folium.GeoJson(
+    geojson_layer = folium.GeoJson(
         seoul_gun,
         style_function=lambda x: {
             'fillColor': 'blue',  # 채우기 색상: 파란색
@@ -30,6 +38,10 @@ def show_smoking():
 
     # 마커 클러스터링 객체 생성 (마커를 그룹화하여 지도 혼잡도를 줄임)
     mc = MC().add_to(map)
+
+    # Fullscreen 플러그인 추가
+    fullscreen = Fullscreen(position="topright", title="Expand Map", title_cancel="Exit Fullscreen")
+    fullscreen.add_to(map)
 
     # 데이터프레임의 각 행을 반복 처리
     for i, r in sd.iterrows():
@@ -51,6 +63,15 @@ def show_smoking():
 
         # 마커를 클러스터에 추가
         mk.add_to(mc)
+
+    search = Search(
+        layer=geojson_layer,
+        search_label="name",
+        placeholder="ex) 강남구, 종로구 ...",
+        collapsed=False,
+        geom_type="Polygon",
+        position="topleft",
+    ).add_to(map)
 
     # 지도 HTML 렌더링하여 반환 (Flask 뷰에서 사용)
     return map.get_root().render()
