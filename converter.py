@@ -3,6 +3,7 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import time
 
+
 # 함수: 주소를 위도와 경도로 변환
 def get_lat_lon(address):
     try:
@@ -14,6 +15,7 @@ def get_lat_lon(address):
     except GeocoderTimedOut:
         time.sleep(1)  # Timeout 발생 시 1초 대기 후 재시도
         return get_lat_lon(address)
+
 
 # Geolocator 초기화
 geolocator = Nominatim(user_agent="geoapi_exercise")
